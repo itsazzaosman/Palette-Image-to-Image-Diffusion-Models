@@ -14,13 +14,10 @@
     "datasets": {
         "train": {
             "which_dataset": {
-                "name": ["data.dataset", "InpaintDataset"],
+                "name": ["data.dataset", "PairedDataset"],
                 "args": {
-                    "data_root": "/content/dataset_split/train", 
-                    "data_len": -1,
-                    "mask_config": {
-                        "mask_mode": "hybrid"
-                    }
+                    "data_root_X": "/content/drive/MyDrive/degraded_split/train",
+                    "data_root_Y": "/content/drive/MyDrive/dataset_split/train"
                 }
             },
             "dataloader": {
@@ -43,12 +40,10 @@
         },
         "test": {
             "which_dataset": {
-                "name": "InpaintDataset",
+                "name": ["data.dataset", "PairedDataset"],
                 "args": {
-                    "data_root": "/content/dataset_split/test",
-                    "mask_config": {
-                        "mask_mode": "center"
-                    }
+                    "data_root_X": "/content/drive/MyDrive/degraded_split/test",
+                    "data_root_Y": "/content/drive/MyDrive/dataset_split/test"
                 }
             },
             "dataloader": {

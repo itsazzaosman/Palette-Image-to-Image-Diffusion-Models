@@ -173,4 +173,33 @@ class ColorizationDataset(data.Dataset):
     def __len__(self):
         return len(self.flist)
 
-
+class PairedDataset(data.Dataset):
+    def __init__(self, data_root_X, data_root_Y, **kwargs):
+        self.dir_X = data_root_X
+        self.dir_Y = data_root_Y
+        
+        # Load all file paths
+        self.paths_X = sorted(make_dataset(self.dir_X))
+        self.paths_Y = sorted(make_dataset(self.dir_Y))
+        
+        import torchvision.transforms as transforms
+        self.transform = transforms.Compose([
+            transforms.ToTensor(),
+            transforms.Normalize((0.5,), (0.5,))
+        ])
+        
+    def __len__(self):
+        return len(self.paths_Y)
+        
+    def __getitem__(self, index):
+        from PIL import Image
+        # Load X (Degraded) and Y (Perfect) as RGB to prevent Tensor channel errors
+        img_X = Image.open(self.paths_X[index]).convert('RGB')
+        img_Y = Image.open(self.paths_Y[index]).convert('RGB')
+        
+        # Ensure exact resolution
+        img_X = img_X.resize((128, 128))
+        img_Y = img_Y.resize((128, 128))
+        
+        # Palette uses 'cond_image' and 'gt_image' keys dynamically
+        return {'cond_image': self.transform(img_X), 'gt_image': self.transform(img_Y), 'path': self.paths_Y[index]}
