@@ -13,8 +13,8 @@
         "train": {
             "name": "Microstructure_Train",
             "mode": "paired",
-            "dataroot_X": "/content/degraded_split/train", 
-            "dataroot_Y": "/content/dataset_split/train",
+            "dataroot_X": "/content/drive/MyDrive/ degraded_split/train", 
+            "dataroot_Y": "/content/drive/MyDrive/dataset_split/train",
             "l_resolution": 128,
             "r_resolution": 128,
             "batch_size": 32,
@@ -24,8 +24,8 @@
         "val": {
             "name": "Microstructure_Val",
             "mode": "paired",
-            "dataroot_X": "/content/degraded_split/val",
-            "dataroot_Y": "/content/dataset_split/val",
+            "dataroot_X": "/content/drive/MyDrive/ degraded_split/val",
+            "dataroot_Y": "/content/drive/MyDrive/dataset_split/val",
             "l_resolution": 128,
             "r_resolution": 128
         }
