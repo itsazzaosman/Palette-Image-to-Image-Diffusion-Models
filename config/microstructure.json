@@ -60,7 +60,7 @@
             "name": ["models.model", "Palette"],
             "args": {
                 "sample_num": 8,
-                "task": "inpainting",
+                "task": "colorization",
                 "ema_scheduler": {
                     "ema_start": 1,
                     "ema_iter": 1,
