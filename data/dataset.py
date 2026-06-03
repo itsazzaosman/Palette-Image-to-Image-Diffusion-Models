@@ -200,6 +200,4 @@ class PairedDataset(data.Dataset):
         # Ensure exact resolution
         img_X = img_X.resize((128, 128))
         img_Y = img_Y.resize((128, 128))
-        
-        # Palette uses 'cond_image' and 'gt_image' keys dynamically
         return {'cond_image': self.transform(img_X), 'gt_image': self.transform(img_Y), 'path': self.paths_Y[index].split('/')[-1]}
