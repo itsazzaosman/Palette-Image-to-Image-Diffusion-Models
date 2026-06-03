@@ -1,9 +1,11 @@
 {
     "name": "microstructure_restoration",
-    "phase": "train",
     "gpu_ids": [0],
+    "seed": -1,
+    "finetune_norm": false,
     "path": {
-        "log": "logs",
+        "base_dir": "experiments",
+        "code": "code",
         "tb_logger": "tb_logger",
         "results": "results",
         "checkpoint": "checkpoint",
@@ -11,59 +13,118 @@
     },
     "datasets": {
         "train": {
-            "name": "Microstructure_Train",
-            "mode": "paired",
-            "dataroot_X": "/content/drive/MyDrive/ degraded_split/train", 
-            "dataroot_Y": "/content/drive/MyDrive/dataset_split/train",
-            "l_resolution": 128,
-            "r_resolution": 128,
-            "batch_size": 32,
-            "num_workers": 4,
-            "use_shuffle": true
+            "which_dataset": {
+                "name": ["data.dataset", "InpaintDataset"],
+                "args": {
+                    "data_root": "/content/dataset_split/train", 
+                    "data_len": -1,
+                    "mask_config": {
+                        "mask_mode": "hybrid"
+                    }
+                }
+            },
+            "dataloader": {
+                "validation_split": 2,
+                "args": {
+                    "batch_size": 32, 
+                    "num_workers": 4,
+                    "shuffle": true,
+                    "pin_memory": true,
+                    "drop_last": true
+                },
+                "val_args": {
+                    "batch_size": 1,
+                    "num_workers": 4,
+                    "shuffle": false,
+                    "pin_memory": true,
+                    "drop_last": false
+                }
+            }
         },
-        "val": {
-            "name": "Microstructure_Val",
-            "mode": "paired",
-            "dataroot_X": "/content/drive/MyDrive/ degraded_split/val",
-            "dataroot_Y": "/content/drive/MyDrive/dataset_split/val",
-            "l_resolution": 128,
-            "r_resolution": 128
+        "test": {
+            "which_dataset": {
+                "name": "InpaintDataset",
+                "args": {
+                    "data_root": "/content/dataset_split/test",
+                    "mask_config": {
+                        "mask_mode": "center"
+                    }
+                }
+            },
+            "dataloader": {
+                "args": {
+                    "batch_size": 8,
+                    "num_workers": 4,
+                    "pin_memory": true
+                }
+            }
         }
     },
     "model": {
-        "which_model_unet": "ddpm",
-        "finetune_norm": false,
-        "unet": {
-            "in_channel": 2,
-            "out_channel": 1,
-            "inner_channel": 64,
-            "channel_multiplier": [1, 2, 4, 8],
-            "attn_res": [16],
-            "res_blocks": 2,
-            "dropout": 0.2
-        },
-        "beta_schedule": {
-            "train": {
-                "schedule": "linear",
-                "n_timestep": 2000,
-                "linear_start": 1e-6,
-                "linear_end": 1e-2
+        "which_model": {
+            "name": ["models.model", "Palette"],
+            "args": {
+                "sample_num": 8,
+                "task": "inpainting",
+                "ema_scheduler": {
+                    "ema_start": 1,
+                    "ema_iter": 1,
+                    "ema_decay": 0.9999
+                },
+                "optimizers": [
+                    { "lr": 5e-5, "weight_decay": 0 }
+                ]
             }
         },
-        "diffusion": {
-            "image_size": 128,
-            "channels": 1,
-            "conditional": true
-        }
+        "which_networks": [
+            {
+                "name": ["models.network", "Network"],
+                "args": {
+                    "init_type": "kaiming",
+                    "module_name": "guided_diffusion",
+                    "unet": {
+                        "in_channel": 6,
+                        "out_channel": 3,
+                        "inner_channel": 64,
+                        "channel_mults": [1, 2, 4, 8],
+                        "attn_res": [16],
+                        "num_head_channels": 32,
+                        "res_blocks": 2,
+                        "dropout": 0.2,
+                        "image_size": 128 
+                    },
+                    "beta_schedule": {
+                        "train": {
+                            "schedule": "linear",
+                            "n_timestep": 2000,
+                            "linear_start": 1e-6,
+                            "linear_end": 0.01
+                        },
+                        "test": {
+                            "schedule": "linear",
+                            "n_timestep": 1000,
+                            "linear_start": 1e-4,
+                            "linear_end": 0.09
+                        }
+                    }
+                }
+            }
+        ],
+        "which_losses": ["mse_loss"],
+        "which_metrics": ["mae"]
     },
     "train": {
-        "n_iter": 100000,
-        "val_freq": 2000,
-        "save_checkpoint_freq": 5000,
-        "print_freq": 100,
-        "optimizer": {
-            "type": "adam",
-            "lr": 1e-5
-        }
+        "n_epoch": 100000000,
+        "n_iter": 100000000,
+        "val_epoch": 5,
+        "save_checkpoint_epoch": 10,
+        "log_iter": 1000,
+        "tensorboard": true
+    },
+    "debug": {
+        "val_epoch": 1,
+        "save_checkpoint_epoch": 1,
+        "log_iter": 2,
+        "debug_split": 50
     }
 }
