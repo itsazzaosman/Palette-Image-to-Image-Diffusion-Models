@@ -109,11 +109,11 @@
         "which_metrics": ["mae"]
     },
     "train": {
-        "n_epoch": 1,
-        "n_iter": 200,
-        "val_epoch": 1,
-        "save_checkpoint_epoch": 1,
-        "log_iter": 10,
+        "n_epoch": 20,
+        "n_iter": 100000,
+        "val_epoch": 5,
+        "save_checkpoint_epoch": 5,
+        "log_iter": 50,
         "tensorboard": true
     },
     "debug": {
