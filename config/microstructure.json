@@ -16,7 +16,7 @@
             "which_dataset": {
                 "name": ["data.dataset", "PairedDataset"],
                 "args": {
-                    "data_root_X": "/content/drive/MyDrive/degraded_split/train",
+                    "data_root_X": "/content/drive/MyDrive/ degraded_split/train",
                     "data_root_Y": "/content/drive/MyDrive/dataset_split/train"
                 }
             },
@@ -42,7 +42,7 @@
             "which_dataset": {
                 "name": ["data.dataset", "PairedDataset"],
                 "args": {
-                    "data_root_X": "/content/drive/MyDrive/degraded_split/test",
+                    "data_root_X": "/content/drive/MyDrive/ degraded_split/test",
                     "data_root_Y": "/content/drive/MyDrive/dataset_split/test"
                 }
             },
